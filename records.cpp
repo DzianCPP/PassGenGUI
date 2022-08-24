@@ -1,24 +1,34 @@
 #include "records.h"
-#pragma once
 
-records::records(QObject *parent)
-    : QObject{parent}
+
+Records::Records(QObject *parent)
 {
     records_amount_ = 0;
     first_record_p_ = nullptr;
 }
 
-void records::m_slt_createNewRecord(MainWindow& mainwin)
+Records::~Records()
 {
-    this->push_back(mainwin.getAddLoginLineText(), mainwin.getAddResourceLineText(), mainwin.getAddPasswordLineText());
+    this->clear();
 }
 
-int records::getRecordsAmount()
+
+void Records::m_slt_addRecord(QString& resource, QString& login, QString& password)
+{
+    this->push_back(resource, login, password);
+}
+
+void Records::m_slt_pop_front()
+{
+    this->pop_front();
+}
+
+int Records::getRecordsAmount()
 {
     return records_amount_;
 }
 
-void records::push_back(QString login, QString resource, char* password)
+void Records::push_back(QString& login, QString& resource, QString& password)
 {
     if (first_record_p_ == nullptr) {
         first_record_p_ = new Record(login, resource, password);
@@ -30,30 +40,23 @@ void records::push_back(QString login, QString resource, char* password)
             this_record = this_record->next_record_;
         }
         this_record->next_record_ = new Record(login, resource, password);
-        this_record = this_record->next_record_;
     }
 
     records_amount_++;
 }
 
-void records::push_front(QString login, QString resource, char *password)
-{
-    Record* new_record = new Record(login, resource, password);
-    new_record->next_record_ = first_record_p_;
-    first_record_p_ = new_record;
-    records_amount_++;
-}
-
-void records::clear()
+void Records::clear()
 {
     while (records_amount_) {
         pop_front();
     }
 }
 
-void records::pop_front()
+void Records::pop_front()
 {
     Record* temp = this->first_record_p_;
+    if (temp == nullptr) { return; }
+
     if (first_record_p_->next_record_ != nullptr) {
         this->first_record_p_ = first_record_p_->next_record_;
     }
@@ -66,40 +69,27 @@ void records::pop_front()
     }
 }
 
-void records::pop_back()
+bool Records::edit_record(QString &login, QString &resource, QString &password, Record &record, QString mod)
 {
-    Record* this_record = this->first_record_p_;
-    while (this_record->next_record_ != nullptr) {
-        this_record = this_record->next_record_;
+    Record* edited_record = &record;
+
+    if (mod == "login" && edited_record != nullptr) {
+        edited_record->login = login;
+        return true;
     }
 
-    delete this_record;
-    records_amount_--;
+    else if (mod == "password" && edited_record != nullptr) {
+        for (int i = 0; i < password.length(); i++) {
+            edited_record->password[i] = password[i];
+        }
+        return true;
+    }
+
+    else if (mod == "resource" && edited_record != nullptr) {
+        edited_record->resource = resource;
+        return true;
+    }
+
+    return false;
 }
 
-bool records::edit_record(QString login, QString resource, char *password, Record &record, QString mod)
-{
-    return true;
-}
-
-bool records::remove(int index)
-{
-    return true;
-
-}
-
-bool records::saveToFileAll(QString filename)
-{
-    return true;
-
-}
-
-void records::saveToFileOne(QString filename)
-{
-
-}
-
-void records::findRecords(QString keyword)
-{
-
-}

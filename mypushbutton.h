@@ -13,10 +13,12 @@ public:
 signals:
     void setActive(bool value);
     void sgn_saveAdded();
+    void sgn_deleteClicked();
 
 private slots:
     void setActiveSLOT();
     void setDisabledSLOT();
+    void slt_clicked();
 
 };
 

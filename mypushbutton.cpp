@@ -16,3 +16,8 @@ void myPushButton::setDisabledSLOT()
 {
     this->setDisabled(true);
 }
+
+void myPushButton::slt_clicked()
+{
+    emit clicked();
+}

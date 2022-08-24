@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#pragma once
+//#pragma once
 #include <QWidget>
 #include <QLineEdit>
 #include <QGridLayout>
@@ -26,15 +26,26 @@ public:
 
     QString getAddResourceLineText();
     QString getAddLoginLineText();
-    QChar* getAddPasswordLineText();
+    QString getAddPasswordLineText();
 
 signals:
-    void m_sgn_saveAddedRecord(const MainWindow* sender);
+    void m_sgn_saveAddedRecord(QString& resource, QString& login, QString& password);
+    void m_sgn_deleteButtonClicked();
 
 private slots:
-    void m_slt_saveAdded();
+    void m_slt_saveAddedButtonCLicked();
+    void m_slt_deleteButtonClicked();
 
 private:
+    QString filename = "records.dat";
+    static const int MAXPASSLENGTH = 17;
+    Records* records;
+    QString resource{};
+    QString login{};
+    QString keyword{};
+    int id{};
+    char password[MAXPASSLENGTH]{};
+
     QGridLayout* m_mainLayout;
     QGridLayout* m_leftLayout;
     QGridLayout* m_rightLayout;
@@ -54,6 +65,7 @@ private:
     myPushButton* m_saveEdit;
     myPushButton* m_quitButton;
     myPushButton* m_editByChoose;
+    myPushButton* m_deleteButton;
 
     QComboBox* m_editBy;
     QComboBox* m_findBy;
@@ -81,6 +93,6 @@ private:
 
     QScrollBar* m_rightScreenScrollBar;
 
-    friend class records;
+    friend Records;
 };
 #endif // MAINWINDOW_H

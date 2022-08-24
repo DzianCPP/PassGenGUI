@@ -12,23 +12,33 @@
 #include <cctype>
 #include <ctime>
 #include <fstream>
-#include <string>
-#include "mainwindow.h"
 
 using namespace std;
 
 
 
-class records : public QObject
+class Records : public QObject
 {
     Q_OBJECT
+
+private:
+    class Record;
 public:
-    explicit records(QObject *parent = nullptr);
+    explicit Records(QObject *parent = nullptr);
+    ~Records();
+
+    int getRecordsAmount();
+    void push_back(QString& login, QString& resource, QString& password);
+    void clear();
+    void pop_front();
+    bool edit_record(QString& login, QString& resource, QString& password, Record& record, QString mod);
 
 signals:
 
-private slots:
-    void m_slt_createNewRecord(const MainWindow& mainwin);
+public slots:
+    void m_slt_addRecord(QString& resource, QString& login, QString& password);
+    void m_slt_pop_front();
+    void m_slt_edit_record(QString& login, QString& resource, QString& password, Record& record, QString mod);
 
 private:
     class Record {
@@ -38,37 +48,18 @@ private:
         QString resource{};
         QChar password[17]{};
 
-        Record(QString login, QString resource, QChar* password, Record* next_record_ = nullptr) {
+        Record(QString login, QString resource, QString& password, Record* next_record_ = nullptr) {
             this->login = login;
             this->resource = resource;
-            for (int i = 0; i < std::strlen((const char*) password); i++) {
+            for (int i = 0; i < password.length(); i++) {
                 this->password[i] = password[i];
             }
             this->next_record_ = next_record_;
         }
     };
 
-public:
-    ~records();
-    records();
-
-    int getRecordsAmount();
-    void push_back(QString login, QString resource, QChar* password);
-    void push_front(QString login, QString resource, char* password);
-    void clear();
-    void pop_front();
-    void pop_back();
-    bool edit_record(QString login, QString resource, char* password, Record& record, QString mod);
-    bool remove(int index);
-    bool saveToFileAll(QString filename);
-    void saveToFileOne(QString filename);
-    void findRecords(QString keyword);
-
-private:
-
     int records_amount_;
     Record* first_record_p_;
-
 };
 
 #endif // RECORDS_H

@@ -7,6 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->setMinimumSize(850, 350);
     this->setStyleSheet("background-color: white; ");
 
+    records = new Records;
+
     //line_edits
 
     m_addResourceLine = createLineEdit();
@@ -67,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_findButton = createButton("Find");
     m_quitButton = createButton("Quit");
     m_editByChoose = createButton("Choose");
+    m_deleteButton = createButton("Delete");
 
     //combo box
 
@@ -81,8 +84,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_checkedAdding, SIGNAL(clicked()), m_saveAdded, SLOT(setActiveSLOT()));
     connect(m_saveAdded, SIGNAL(clicked()), m_saveAdded, SLOT(setDisabledSLOT()));
+    connect(m_saveAdded, SIGNAL(clicked()), this, SLOT(m_slt_saveAddedButtonCLicked()));
+    connect(this, &MainWindow::m_sgn_saveAddedRecord, records, &Records::m_slt_addRecord);
     connect(m_checkedEdit, SIGNAL(clicked()), m_saveEdit, SLOT(setActiveSLOT()));
     connect(m_saveEdit, SIGNAL(clicked()), m_saveEdit, SLOT(setDisabledSLOT()));
+    connect(m_deleteButton, &myPushButton::clicked, this, &MainWindow::m_slt_deleteButtonClicked);
+    connect(this, &MainWindow::m_sgn_deleteButtonClicked, records, &Records::m_slt_pop_front);
 
     //adding widgets
 
@@ -90,8 +97,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_mainLayout->addLayout(m_rightLayout,          0, 9, 11, 9);
     m_leftLayout->addLayout(m_addButtonLayout,      0, 0, 5, 5);
     m_leftLayout->addLayout(m_editButtonLayout,     5, 0, 6, 5);
-    m_leftLayout->addLayout(m_smallButtonsLayout,   0, 6, 5, 4);
-    m_leftLayout->addLayout(m_messageLayout,        5, 6, 6, 4);
+    m_leftLayout->addLayout(m_smallButtonsLayout,   0, 6, 6, 4);
+    m_leftLayout->addLayout(m_messageLayout,        6, 6, 6, 4);
 
     m_addButtonLayout->addWidget(m_add,             0, 0, 1, 5);
     m_addButtonLayout->addWidget(m_addResource,     1, 0, 1, 2);
@@ -125,9 +132,10 @@ MainWindow::MainWindow(QWidget *parent)
     m_smallButtonsLayout->addWidget(m_findBy,       2, 0, 1, 1);
     m_smallButtonsLayout->addWidget(m_findLine,     2, 1, 1, 3);
     m_smallButtonsLayout->addWidget(m_findButton,   3, 0, 1, 4);
-    m_smallButtonsLayout->addWidget(m_quitButton,   4, 0, 1, 4);
+    m_smallButtonsLayout->addWidget(m_quitButton,   5, 0, 1, 4);
+    m_smallButtonsLayout->addWidget(m_deleteButton, 4, 0 ,1, 4);
 
-    m_messageLayout->addWidget(m_message,           0, 0, 5, 4);
+    m_messageLayout->addWidget(m_message,           0, 0, 4, 4);
 
     m_rightLayout->addWidget(m_rightScreen,          0, 0, 9, 8);
     m_rightLayout->addWidget(m_rightScreenScrollBar, 0, 8, 9, 1);
@@ -184,20 +192,27 @@ QString MainWindow::getAddLoginLineText()
 
 }
 
-QChar* MainWindow::getAddPasswordLineText()
+QString MainWindow::getAddPasswordLineText()
 {
-    QChar* arr = new QChar[17];
-    int i = 0;
-    for (auto it = m_addPasswordLine->text().begin(); it != m_addPasswordLine->text().end(); ++it)
-    {
-        arr[i] = *it;
-    }
-
-    return arr;
+    return m_addPasswordLine->text();
 }
 
-void MainWindow::m_slt_saveAdded()
+void MainWindow::m_slt_saveAddedButtonCLicked()
 {
-    emit m_sgn_saveAddedRecord(this);
+    QString resource = getAddResourceLineText();
+    QString login = getAddLoginLineText();
+    QString password = getAddPasswordLineText();
+    emit m_sgn_saveAddedRecord(resource, login, password);
+
+    m_rightScreen->setText(QString::number(records->getRecordsAmount()));
 }
+
+void MainWindow::m_slt_deleteButtonClicked()
+{
+    emit m_sgn_deleteButtonClicked();
+
+    m_rightScreen->setText(QString::number(records->getRecordsAmount()));
+
+}
+
 
