@@ -11,3 +11,8 @@ void myPushButton::setActiveSLOT()
 {
     this->setDisabled(false);
 }
+
+void myPushButton::setDisabledSLOT()
+{
+    this->setDisabled(true);
+}

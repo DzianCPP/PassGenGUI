@@ -14,6 +14,7 @@ signals:
 
 private slots:
     void setActiveSLOT();
+    void setDisabledSLOT();
 
 };
 
