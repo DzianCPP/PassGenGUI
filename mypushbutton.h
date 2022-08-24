@@ -1,5 +1,6 @@
 #ifndef MYPUSHBUTTON_H
 #define MYPUSHBUTTON_H
+#pragma once
 
 #include <QPushButton>
 
@@ -11,6 +12,7 @@ public:
 
 signals:
     void setActive(bool value);
+    void sgn_saveAdded();
 
 private slots:
     void setActiveSLOT();

@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#pragma once
 #include <QWidget>
 #include <QLineEdit>
 #include <QGridLayout>
@@ -9,6 +9,7 @@
 #include <QComboBox>
 #include <QScrollBar>
 #include "mypushbutton.h"
+#include "records.h"
 
 class MainWindow : public QWidget
 {
@@ -23,6 +24,16 @@ public:
     myPushButton* createButton(const QString buttonText);
     QComboBox* createComboBox(const QString itemText, const QString itemText2);
 
+    QString getAddResourceLineText();
+    QString getAddLoginLineText();
+    QChar* getAddPasswordLineText();
+
+signals:
+    void m_sgn_saveAddedRecord(const MainWindow* sender);
+
+private slots:
+    void m_slt_saveAdded();
+
 private:
     QGridLayout* m_mainLayout;
     QGridLayout* m_leftLayout;
@@ -32,7 +43,6 @@ private:
     QGridLayout* m_editButtonLayout;
     QGridLayout* m_messageLayout;
 
-    myPushButton* m_addButton;
     myPushButton* m_autoPassword;
     myPushButton* m_checkedAdding;
     myPushButton* m_saveAdded;
@@ -58,6 +68,7 @@ private:
     QLabel* m_editPassword;
     QLabel* m_search;
     QLabel* m_message;
+    QLabel* m_add;
 
     QLineEdit* m_addResourceLine;
     QLineEdit* m_addLoginLine;
@@ -69,5 +80,7 @@ private:
     QLineEdit* m_findLine;
 
     QScrollBar* m_rightScreenScrollBar;
+
+    friend class records;
 };
 #endif // MAINWINDOW_H

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
@@ -35,6 +36,11 @@ MainWindow::MainWindow(QWidget *parent)
     m_message->setStyleSheet(" border-width: 1px;"
                              " border-style: solid;"
                              " border-color: black;" );
+    m_add = createLabel("Add a new record");
+    m_add->setStyleSheet(" background-color: aquamarine; "
+                         " border: 1px solid aquamarine; "
+                         " border-radius: 5px; ");
+    m_add->setAlignment(Qt::AlignCenter);
 
     //layouts
 
@@ -48,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     //buttons
 
-    m_addButton =     createButton("Add a record");
     m_autoPassword =  createButton("Auto");
     m_checkedAdding = createButton("Checked");
     m_saveAdded =     createButton("Save");
@@ -88,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_leftLayout->addLayout(m_smallButtonsLayout,   0, 6, 5, 4);
     m_leftLayout->addLayout(m_messageLayout,        5, 6, 6, 4);
 
-    m_addButtonLayout->addWidget(m_addButton,       0, 0, 1, 5);
+    m_addButtonLayout->addWidget(m_add,             0, 0, 1, 5);
     m_addButtonLayout->addWidget(m_addResource,     1, 0, 1, 2);
     m_addButtonLayout->addWidget(m_addResourceLine, 1, 2, 1, 3);
     m_addButtonLayout->addWidget(m_addLogin,        2, 0, 1, 2);
@@ -147,7 +152,7 @@ QLabel *MainWindow::createLabel(const QString labelText)
 QLineEdit *MainWindow::createLineEdit()
 {
     QLineEdit* newLineEdit = new QLineEdit();
-    newLineEdit->setReadOnly(true);
+    newLineEdit->setReadOnly(false);
     newLineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     return newLineEdit;
 }
@@ -166,5 +171,33 @@ QComboBox *MainWindow::createComboBox(const QString itemText, const QString item
     newComboBox->addItem(itemText2);
     newComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     return newComboBox;
+}
+
+QString MainWindow::getAddResourceLineText()
+{
+    return m_addResourceLine->text();
+}
+
+QString MainWindow::getAddLoginLineText()
+{
+    return m_addLoginLine->text();
+
+}
+
+QChar* MainWindow::getAddPasswordLineText()
+{
+    QChar* arr = new QChar[17];
+    int i = 0;
+    for (auto it = m_addPasswordLine->text().begin(); it != m_addPasswordLine->text().end(); ++it)
+    {
+        arr[i] = *it;
+    }
+
+    return arr;
+}
+
+void MainWindow::m_slt_saveAdded()
+{
+    emit m_sgn_saveAddedRecord(this);
 }
 
