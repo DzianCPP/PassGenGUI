@@ -90,6 +90,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_saveEdit, SIGNAL(clicked()), m_saveEdit, SLOT(setDisabledSLOT()));
     connect(m_deleteButton, &myPushButton::clicked, this, &MainWindow::m_slt_deleteButtonClicked);
     connect(this, &MainWindow::m_sgn_deleteButtonClicked, records, &Records::m_slt_pop_front);
+    connect(m_saveAdded, &myPushButton::clicked, this, &MainWindow::m_slt_saveToFileAll);
+    connect(this, &MainWindow::m_sgn_saveToFileAll, records, &Records::m_slt_saveToFileAll);
+    connect(m_saveAdded, &myPushButton::clicked, m_addResourceLine, &QLineEdit::clear);
+    connect(m_saveAdded, &myPushButton::clicked, m_addLoginLine, &QLineEdit::clear);
+    connect(m_saveAdded, &myPushButton::clicked, m_addPasswordLine, &QLineEdit::clear);
+    connect(m_showButton, &myPushButton::clicked, this, &MainWindow::m_slt_showRecords);
+    connect(this, &MainWindow::m_sgn_showRecords, records, &Records::m_slt_showRecords);
+
 
     //adding widgets
 
@@ -203,8 +211,6 @@ void MainWindow::m_slt_saveAddedButtonCLicked()
     QString login = getAddLoginLineText();
     QString password = getAddPasswordLineText();
     emit m_sgn_saveAddedRecord(resource, login, password);
-
-    m_rightScreen->setText(QString::number(records->getRecordsAmount()));
 }
 
 void MainWindow::m_slt_deleteButtonClicked()
@@ -213,6 +219,16 @@ void MainWindow::m_slt_deleteButtonClicked()
 
     m_rightScreen->setText(QString::number(records->getRecordsAmount()));
 
+}
+
+void MainWindow::m_slt_saveToFileAll()
+{
+    emit m_sgn_saveToFileAll(filename, m_message);
+}
+
+void MainWindow::m_slt_showRecords()
+{
+    emit m_sgn_showRecords("all", m_rightScreen);
 }
 
 

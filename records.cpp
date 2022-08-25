@@ -23,6 +23,16 @@ void Records::m_slt_pop_front()
     this->pop_front();
 }
 
+void Records::m_slt_saveToFileAll(QString& filename, QLabel* m_messageLabel)
+{
+    this->saveToFileAll(filename, m_messageLabel);
+}
+
+void Records::m_slt_showRecords(QString all, QLabel *m_rightScreen)
+{
+    this->showRecords(all, m_rightScreen);
+}
+
 int Records::getRecordsAmount()
 {
     return records_amount_;
@@ -69,27 +79,71 @@ void Records::pop_front()
     }
 }
 
-bool Records::edit_record(QString &login, QString &resource, QString &password, Record &record, QString mod)
+bool Records::saveToFileAll(QString filename, QLabel* m_messageLabel)
 {
-    Record* edited_record = &record;
-
-    if (mod == "login" && edited_record != nullptr) {
-        edited_record->login = login;
-        return true;
+    QFile file(filename);
+    if (!file.open(QIODeviceBase::OpenModeFlag::WriteOnly | QIODeviceBase::Append))
+    {
+        m_messageLabel->setText("Error! No file!");
     }
 
-    else if (mod == "password" && edited_record != nullptr) {
-        for (int i = 0; i < password.length(); i++) {
-            edited_record->password[i] = password[i];
+    else
+    {
+        Record* toPrint = this->first_record_p_;
+        if (toPrint == nullptr)
+        {
+            return false;
         }
-        return true;
+
+        else
+        {
+            for (; ;)
+            {
+                QByteArray _resource = toPrint->resource.toLocal8Bit();
+                QByteArray _login = toPrint->login.toLocal8Bit();
+                file.write(_resource + '\n' + _login + '\n');
+                file.write((const char*) toPrint->password);
+                file.write("\n\n");
+
+                if (toPrint->next_record_ != nullptr)
+                {
+                    toPrint = toPrint->next_record_;
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+        }
     }
 
-    else if (mod == "resource" && edited_record != nullptr) {
-        edited_record->resource = resource;
-        return true;
+    m_messageLabel->setText("All records were saved");
+    file.close();
+    return true;
+}
+
+bool Records::showRecords(QString all, QLabel *m_rightScreen)
+{
+    Record* toPrint = this->first_record_p_;
+    if (toPrint == nullptr) {
+        return false;
     }
 
-    return false;
+    else {
+        int count = { 1 };
+        for (; ; count++) {
+            m_rightScreen->setText("Resource: " + toPrint->resource + "\n"
+                                    + "Login: " + toPrint->login + "\n"
+                                   + "Password: " + QtPrivate::convertToQString(toPrint->password) + "\n");
+
+            toPrint = toPrint->next_record_;
+            if (toPrint == nullptr) {
+                break;
+            }
+        }
+    }
+
+    return true;
 }
 

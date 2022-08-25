@@ -31,10 +31,15 @@ public:
 signals:
     void m_sgn_saveAddedRecord(QString& resource, QString& login, QString& password);
     void m_sgn_deleteButtonClicked();
+    void m_sgn_saveToFileAll(QString& filename, QLabel* m_messageLabel);
+    void m_sgn_showRecords(QString all, QLabel *m_rightScreen);
 
 private slots:
     void m_slt_saveAddedButtonCLicked();
     void m_slt_deleteButtonClicked();
+    void m_slt_saveToFileAll();
+    void m_slt_showRecords();
+
 
 private:
     QString filename = "records.dat";
