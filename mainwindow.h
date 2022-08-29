@@ -9,6 +9,7 @@
 #include <QComboBox>
 #include <QScrollBar>
 #include "mypushbutton.h"
+#include "logic.h"
 
 class MainWindow : public QWidget
 {
@@ -23,16 +24,19 @@ public:
     myPushButton* createButton(const QString buttonText);
     QComboBox* createComboBox(const QString itemText, const QString itemText2);
 
-    QString getAddResourceLineText();
-    QString getAddLoginLineText();
-    QString getAddPasswordLineText();
-
 signals:
-
+    void sgn_sendInfoToRecordCreator(const QString& login_, const QString& resource_, const QString& password_);
+    void sgn_sendPasswordForValidation(const QString& password_, QString& mod, QString& message);
 
 private slots:
+    void m_slt_sendInfoToRecordCreator();
+    void slt_sendPasswordForValidation();
+    void slt_getValidationResults(bool result_, QString& message);
 
 private:
+    QString mod = {"manual"};
+    QString message = {};
+
     QGridLayout* m_mainLayout;
     QGridLayout* m_leftLayout;
     QGridLayout* m_rightLayout;
@@ -82,5 +86,7 @@ private:
     QLineEdit* m_removeByLine;
 
     QScrollBar* m_rightScreenScrollBar;
+
+    logic _logic;
 };
 #endif // MAINWINDOW_H

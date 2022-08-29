@@ -66,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_autoPasswordButton =  createButton("Auto");
     m_checkedAddingButton = createButton("Checked");
     m_saveAddedButton =     createButton("Save");
+    m_saveAddedButton->setDisabled(true);
     m_showButton =    createButton("Show all records");
     m_editPasswordAutoButton = createButton("Auto");
     m_checkedEditButton = createButton("Checked");
@@ -87,7 +88,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     //connections
 
-
+    connect(m_checkedAddingButton, SIGNAL(clicked()), this, SLOT(slt_sendPasswordForValidation()));
+    connect(this, SIGNAL(sgn_sendPasswordForValidation(QString,QString&,QString&)), _logic.getPasswordValidator(), SLOT(slt_validatePassword(QString,QString&,QString&)));
+    connect(_logic.getPasswordValidator(), SIGNAL(sgn_sendValidationResults(bool,QString&)), this, SLOT(slt_getValidationResults(bool,QString&)));
+    connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(m_slt_sendInfoToRecordCreator()));
+    connect(m_saveAddedButton, SIGNAL(clicked()), m_saveAddedButton, SLOT(m_slt_setEnabledFALSE()));
+    connect(this, SIGNAL(sgn_sendInfoToRecordCreator(QString, QString, QString)), _logic.getRecordCreator(), SLOT(slt_createNewRecord(QString,QString,QString)));
 
     //adding widgets
 
@@ -179,4 +185,33 @@ QComboBox *MainWindow::createComboBox(const QString itemText, const QString item
     newComboBox->addItem(itemText2);
     newComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     return newComboBox;
+}
+
+void MainWindow::m_slt_sendInfoToRecordCreator()
+{
+    QString resource_ = this->m_addResourceLine->text();
+    QString login_ = this->m_addLoginLine->text();
+    QString password_ = this->m_addPasswordLine->text();
+
+    emit this->sgn_sendInfoToRecordCreator(resource_, login_, password_);
+}
+
+void MainWindow::slt_sendPasswordForValidation()
+{
+    emit sgn_sendPasswordForValidation(this->m_addPasswordLine->text(), this->mod, this->message);
+}
+
+void MainWindow::slt_getValidationResults(bool result_, QString &message)
+{
+    if (result_ == true)
+    {
+        m_saveAddedButton->setEnabled(true);
+        m_messageLabel->setText(message);
+        return;
+    }
+
+    m_saveAddedButton->setDisabled(true);
+    m_messageLabel->setText(message);
+    return;
+
 }

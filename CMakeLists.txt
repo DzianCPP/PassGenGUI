@@ -22,6 +22,16 @@ set(PROJECT_SOURCES
 	mypushbutton.h
 	record.h
 	record.cpp
+
+	recordcreator.cpp
+	recordcreator.h
+	passwordvalidator.cpp
+	passwordvalidator.h
+
+	data.h
+	data.cpp
+	logic.h
+	logic.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

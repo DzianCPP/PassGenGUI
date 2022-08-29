@@ -13,6 +13,8 @@ public:
 signals:
 
 private slots:
+    void m_slt_setEnabledTRUE();
+    void m_slt_setEnabledFALSE();
 
 };
 
