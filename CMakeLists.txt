@@ -20,8 +20,8 @@ set(PROJECT_SOURCES
 	mainwindow.h
 	mypushbutton.cpp
 	mypushbutton.h
-	records.h
-	records.cpp
+	record.h
+	record.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

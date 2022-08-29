@@ -9,7 +9,6 @@
 #include <QComboBox>
 #include <QScrollBar>
 #include "mypushbutton.h"
-#include "records.h"
 
 class MainWindow : public QWidget
 {
@@ -29,28 +28,11 @@ public:
     QString getAddPasswordLineText();
 
 signals:
-    void m_sgn_saveAddedRecord(QString& resource, QString& login, QString& password);
-    void m_sgn_deleteButtonClicked();
-    void m_sgn_saveToFileAll(QString& filename, QLabel* m_messageLabel);
-    void m_sgn_showRecords(QString all, QLabel *m_rightScreen);
+
 
 private slots:
-    void m_slt_saveAddedButtonCLicked();
-    void m_slt_deleteButtonClicked();
-    void m_slt_saveToFileAll();
-    void m_slt_showRecords();
-
 
 private:
-    QString filename = "records.dat";
-    static const int MAXPASSLENGTH = 17;
-    Records* records;
-    QString resource{};
-    QString login{};
-    QString keyword{};
-    int id{};
-    char password[MAXPASSLENGTH]{};
-
     QGridLayout* m_mainLayout;
     QGridLayout* m_leftLayout;
     QGridLayout* m_rightLayout;
@@ -59,33 +41,35 @@ private:
     QGridLayout* m_editButtonLayout;
     QGridLayout* m_messageLayout;
 
-    myPushButton* m_autoPassword;
-    myPushButton* m_checkedAdding;
-    myPushButton* m_saveAdded;
+    myPushButton* m_autoPasswordButton;
+    myPushButton* m_checkedAddingButton;
+    myPushButton* m_saveAddedButton;
     myPushButton* m_showButton;
     myPushButton* m_findButton;
-    myPushButton* m_editButton;
-    myPushButton* m_editPasswordAuto;
-    myPushButton* m_checkedEdit;
-    myPushButton* m_saveEdit;
+    myPushButton* m_editPasswordAutoButton;
+    myPushButton* m_checkedEditButton;
+    myPushButton* m_saveEditButton;
     myPushButton* m_quitButton;
-    myPushButton* m_editByChoose;
+    myPushButton* m_editByChooseButton;
     myPushButton* m_deleteButton;
+    myPushButton* m_sureButton;
+    myPushButton* m_cancelButton;
 
-    QComboBox* m_editBy;
-    QComboBox* m_findBy;
+    QComboBox* m_editByComboBox;
 
-
-    QLabel* m_rightScreen;
-    QLabel* m_addResource;
-    QLabel* m_addLogin;
-    QLabel* m_addPassword;
-    QLabel* m_editResource;
-    QLabel* m_editLogin;
-    QLabel* m_editPassword;
-    QLabel* m_search;
-    QLabel* m_message;
-    QLabel* m_add;
+    QLabel* m_rightScreenLabel;
+    QLabel* m_addResourceLabel;
+    QLabel* m_addLoginLabel;
+    QLabel* m_addPasswordLabel;
+    QLabel* m_editResourceLabel;
+    QLabel* m_editLoginLabel;
+    QLabel* m_editPasswordLabel;
+    QLabel* m_searchLabel;
+    QLabel* m_messageLabel;
+    QLabel* m_addLabel;
+    QLabel* m_editLabel;
+    QLabel* m_removeKeywordLabel;
+    QLabel* m_findKeywordLabel;
 
     QLineEdit* m_addResourceLine;
     QLineEdit* m_addLoginLine;
@@ -95,9 +79,8 @@ private:
     QLineEdit* m_editLoginLine;
     QLineEdit* m_editPasswordLine;
     QLineEdit* m_findLine;
+    QLineEdit* m_removeByLine;
 
     QScrollBar* m_rightScreenScrollBar;
-
-    friend Records;
 };
 #endif // MAINWINDOW_H
