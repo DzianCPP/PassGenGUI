@@ -17,3 +17,9 @@ PasswordValidator *logic::getPasswordValidator()
     PasswordValidator* thisPasswordValidator = &passwordValidator;
     return thisPasswordValidator;
 }
+
+AutoPasswordGenerator *logic::getAutoPasswordGenerator()
+{
+    AutoPasswordGenerator* thisAutoPasswordGenerator = &autoPasswordGenerator;
+    return thisAutoPasswordGenerator;
+}

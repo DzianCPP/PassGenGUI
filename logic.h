@@ -3,6 +3,7 @@
 
 #include "recordcreator.h"
 #include "passwordvalidator.h"
+#include "autopasswordgenerator.h"
 
 #include <QObject>
 
@@ -13,12 +14,14 @@ public:
     explicit logic(QObject *parent = nullptr);
     recordcreator* getRecordCreator();
     PasswordValidator* getPasswordValidator();
+    AutoPasswordGenerator* getAutoPasswordGenerator();
 
 signals:
 
 private:
     recordcreator recordCreator;
     PasswordValidator passwordValidator;
+    AutoPasswordGenerator autoPasswordGenerator;
 
 
 };

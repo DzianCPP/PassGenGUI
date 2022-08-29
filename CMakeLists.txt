@@ -27,6 +27,8 @@ set(PROJECT_SOURCES
 	recordcreator.h
 	passwordvalidator.cpp
 	passwordvalidator.h
+	autopasswordgenerator.h
+	autopasswordgenerator.cpp
 
 	data.h
 	data.cpp

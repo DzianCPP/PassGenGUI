@@ -93,7 +93,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_logic.getPasswordValidator(), SIGNAL(sgn_sendValidationResults(bool,QString&)), this, SLOT(slt_getValidationResults(bool,QString&)));
     connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(m_slt_sendInfoToRecordCreator()));
     connect(m_saveAddedButton, SIGNAL(clicked()), m_saveAddedButton, SLOT(m_slt_setEnabledFALSE()));
-    connect(this, SIGNAL(sgn_sendInfoToRecordCreator(QString, QString, QString)), _logic.getRecordCreator(), SLOT(slt_createNewRecord(QString,QString,QString)));
+    connect(this, SIGNAL(sgn_sendInfoToRecordCreator(QString,QString,QString)), _logic.getRecordCreator(), SLOT(slt_createNewRecord()));
+    connect(m_autoPasswordButton, SIGNAL(clicked()), this, SLOT(m_slt_setModAuto()));
+    connect(m_autoPasswordButton, SIGNAL(clicked()), this, SLOT(slt_generatePasswordAuto()));
+    connect(this, SIGNAL(sgn_generateAutoPassword(PasswordValidator*,QString&,QString&)), _logic.getAutoPasswordGenerator(), SLOT(slt_generatePasswordAuto(PasswordValidator*,QString&,QString&)));
+    connect(_logic.getAutoPasswordGenerator(), SIGNAL(sgn_sendAutoPassword(QString*)), this, SLOT(slt_getAutoPassword(QString*)));
 
     //adding widgets
 
@@ -198,6 +202,7 @@ void MainWindow::m_slt_sendInfoToRecordCreator()
 
 void MainWindow::slt_sendPasswordForValidation()
 {
+    m_messageLabel->clear();
     emit sgn_sendPasswordForValidation(this->m_addPasswordLine->text(), this->mod, this->message);
 }
 
@@ -214,4 +219,19 @@ void MainWindow::slt_getValidationResults(bool result_, QString &message)
     m_messageLabel->setText(message);
     return;
 
+}
+
+void MainWindow::m_slt_setModAuto()
+{
+    this->mod = "auto";
+}
+
+void MainWindow::slt_generatePasswordAuto()
+{
+    emit sgn_generateAutoPassword(_logic.getPasswordValidator(), this->mod, this->message);
+}
+
+void MainWindow::slt_getAutoPassword(QString* _password)
+{
+    m_addPasswordLine->setText(*_password);
 }

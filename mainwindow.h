@@ -27,11 +27,16 @@ public:
 signals:
     void sgn_sendInfoToRecordCreator(const QString& login_, const QString& resource_, const QString& password_);
     void sgn_sendPasswordForValidation(const QString& password_, QString& mod, QString& message);
+    void sgn_generatePasswordAuto();
+    void sgn_generateAutoPassword(PasswordValidator*, QString&, QString&);
 
 private slots:
     void m_slt_sendInfoToRecordCreator();
     void slt_sendPasswordForValidation();
     void slt_getValidationResults(bool result_, QString& message);
+    void m_slt_setModAuto();
+    void slt_generatePasswordAuto();
+    void slt_getAutoPassword(QString* _password);
 
 private:
     QString mod = {"manual"};

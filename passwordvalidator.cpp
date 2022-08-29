@@ -10,19 +10,18 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
 {
     std::string _password = password_.toStdString();
     char* _pass = new char[_password.length() + 1];
-    _pass[_password.length()] = '\0';
-    for (int i = 0; _pass[i] != '\0'; i++)
+    for (int i = 0; i < _password.length(); i++)
     {
         _pass[i] = _password.at(i);
     }
-
-    int length = std::strlen(_pass);
+    _pass[_password.length()] = '\0';
     if (std::strlen(_pass) < 8 || std::strlen(_pass) > 16)
     {
         if (mod == "manual")
         {
             message = "This password is invalid:\nit must be 8-16 symbols!";
         }
+        delete[] _pass;
         return false;
     }
 
@@ -41,6 +40,7 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
         {
             message = "This password is invalid:\nit must contain at least 1 upper case letter!";
         }
+        delete[] _pass;
         return false;
     }
 
@@ -60,6 +60,8 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
         {
             message = "This password is invalid:\nit must contain at least 1 lower case letter!";
         }
+
+        delete[] _pass;
         return false;
     }
 
@@ -77,6 +79,7 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
         {
             message = "This password is invalid:\nit must contain at least one digit!";
         }
+        delete[] _pass;
         return false;
     }
 
@@ -116,6 +119,7 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
         {
             message = "This password is invalid!\nIt must contain at least on special character:\n!, @, #, $, %, ^, &, *, (, ), _, +, -, = ";
         }
+        delete[] _pass;
         return false;
     }
 
