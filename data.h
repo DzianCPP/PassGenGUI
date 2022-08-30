@@ -1,8 +1,9 @@
 #ifndef DATA_H
 #define DATA_H
 #include "record.h"
-#include <QList>
+#include <forward_list>
 
-extern QList<Record>* _recordList;
+extern const QString filename;
+extern std::forward_list<Record>* _recordList;
 
 #endif // DATA_H

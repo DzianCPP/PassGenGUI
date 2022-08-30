@@ -124,10 +124,11 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
     }
 
     delete[] _pass;
+    message = "This password is ok";
     return true;
 }
 
 void PasswordValidator::slt_validatePassword(const QString &password_, QString &mod, QString &message)
 {
-    emit sgn_sendValidationResults(validatePassword(password_, mod, message), message);
+    emit sgn_sendValidationResults(validatePassword(password_, mod, message));
 }

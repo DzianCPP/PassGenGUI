@@ -14,5 +14,5 @@ void myPushButton::m_slt_setEnabledTRUE()
 
 void myPushButton::m_slt_setEnabledFALSE()
 {
-    this->setEnabled(false);
+    this->setDisabled(true);
 }

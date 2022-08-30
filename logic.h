@@ -4,6 +4,7 @@
 #include "recordcreator.h"
 #include "passwordvalidator.h"
 #include "autopasswordgenerator.h"
+#include "filewriter.h"
 
 #include <QObject>
 
@@ -15,6 +16,7 @@ public:
     recordcreator* getRecordCreator();
     PasswordValidator* getPasswordValidator();
     AutoPasswordGenerator* getAutoPasswordGenerator();
+    FileWriter* getFileWriter();
 
 signals:
 
@@ -22,6 +24,7 @@ private:
     recordcreator recordCreator;
     PasswordValidator passwordValidator;
     AutoPasswordGenerator autoPasswordGenerator;
+    FileWriter fileWriter;
 
 
 };

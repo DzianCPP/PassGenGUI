@@ -15,6 +15,9 @@ public:
     QString password{};
 
     Record(const QString& login, const QString& resource, const QString& password);
+
+private:
+
 };
 
 #endif // RECORD_H

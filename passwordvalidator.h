@@ -11,7 +11,7 @@ public:
     bool validatePassword(const QString& password_, QString& mod, QString& message);
 
 signals:
-    void sgn_sendValidationResults(bool result, QString& message);
+    void sgn_sendValidationResults(bool result);
 
 public slots:
     void slt_validatePassword(const QString& password_, QString& mod, QString& message);

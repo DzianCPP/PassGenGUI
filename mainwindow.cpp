@@ -90,14 +90,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_checkedAddingButton, SIGNAL(clicked()), this, SLOT(slt_sendPasswordForValidation()));
     connect(this, SIGNAL(sgn_sendPasswordForValidation(QString,QString&,QString&)), _logic.getPasswordValidator(), SLOT(slt_validatePassword(QString,QString&,QString&)));
-    connect(_logic.getPasswordValidator(), SIGNAL(sgn_sendValidationResults(bool,QString&)), this, SLOT(slt_getValidationResults(bool,QString&)));
+    connect(_logic.getPasswordValidator(), SIGNAL(sgn_sendValidationResults(bool)), this, SLOT(slt_getValidationResults(bool)));
     connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(m_slt_sendInfoToRecordCreator()));
     connect(m_saveAddedButton, SIGNAL(clicked()), m_saveAddedButton, SLOT(m_slt_setEnabledFALSE()));
-    connect(this, SIGNAL(sgn_sendInfoToRecordCreator(QString,QString,QString)), _logic.getRecordCreator(), SLOT(slt_createNewRecord()));
+    connect(this, SIGNAL(sgn_sendInfoToRecordCreator(QString,QString,QString)), _logic.getRecordCreator(), SLOT(slt_createNewRecord(QString,QString,QString)));
     connect(m_autoPasswordButton, SIGNAL(clicked()), this, SLOT(m_slt_setModAuto()));
     connect(m_autoPasswordButton, SIGNAL(clicked()), this, SLOT(slt_generatePasswordAuto()));
     connect(this, SIGNAL(sgn_generateAutoPassword(PasswordValidator*,QString&,QString&)), _logic.getAutoPasswordGenerator(), SLOT(slt_generatePasswordAuto(PasswordValidator*,QString&,QString&)));
     connect(_logic.getAutoPasswordGenerator(), SIGNAL(sgn_sendAutoPassword(QString*)), this, SLOT(slt_getAutoPassword(QString*)));
+    connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(slt_writeOneRecord()));
+    connect(this, SIGNAL(sgn_writeOneFile(QString&)), _logic.getFileWriter(), SLOT(slt_writeOneRecord(QString&)));
+    connect(_logic.getFileWriter(), SIGNAL(sgn_writeOneRecordResults(bool)), this, SLOT(slt_getValidationResults(bool)));
 
     //adding widgets
 
@@ -206,7 +209,7 @@ void MainWindow::slt_sendPasswordForValidation()
     emit sgn_sendPasswordForValidation(this->m_addPasswordLine->text(), this->mod, this->message);
 }
 
-void MainWindow::slt_getValidationResults(bool result_, QString &message)
+void MainWindow::slt_getValidationResults(bool result_)
 {
     if (result_ == true)
     {
@@ -234,4 +237,9 @@ void MainWindow::slt_generatePasswordAuto()
 void MainWindow::slt_getAutoPassword(QString* _password)
 {
     m_addPasswordLine->setText(*_password);
+}
+
+void MainWindow::slt_writeOneRecord()
+{
+    emit sgn_writeOneFile(this->message);
 }

@@ -23,3 +23,9 @@ AutoPasswordGenerator *logic::getAutoPasswordGenerator()
     AutoPasswordGenerator* thisAutoPasswordGenerator = &autoPasswordGenerator;
     return thisAutoPasswordGenerator;
 }
+
+FileWriter *logic::getFileWriter()
+{
+    FileWriter* thisFileWriter = &fileWriter;
+    return thisFileWriter;
+}
