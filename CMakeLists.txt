@@ -31,6 +31,14 @@ set(PROJECT_SOURCES
 	autopasswordgenerator.cpp
 	filewriter.h
 	filewriter.cpp
+	filereader.cpp
+	filereader.h
+	recordshower.cpp
+	recordshower.h
+	recordfinder.h
+	recordfinder.cpp
+	recordeditor.h
+	recordeditor.cpp
 
 	data.h
 	data.cpp

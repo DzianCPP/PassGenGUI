@@ -17,10 +17,7 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
     _pass[_password.length()] = '\0';
     if (std::strlen(_pass) < 8 || std::strlen(_pass) > 16)
     {
-        if (mod == "manual")
-        {
-            message = "This password is invalid:\nit must be 8-16 symbols!";
-        }
+        message = "This password is invalid:\nit must be 8-16 symbols!";
         delete[] _pass;
         return false;
     }
@@ -36,10 +33,7 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
 
     if (!upperCount)
     {
-        if (mod == "manual")
-        {
-            message = "This password is invalid:\nit must contain at least 1 upper case letter!";
-        }
+        message = "This password is invalid:\nit must contain at least 1 upper case letter!";
         delete[] _pass;
         return false;
     }
@@ -57,10 +51,7 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
     if (!lowerCount)
     {
         if (mod == "manual")
-        {
-            message = "This password is invalid:\nit must contain at least 1 lower case letter!";
-        }
-
+        message = "This password is invalid:\nit must contain at least 1 lower case letter!";
         delete[] _pass;
         return false;
     }
@@ -76,9 +67,7 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
     if (!numCount)
     {
         if (mod == "manual")
-        {
-            message = "This password is invalid:\nit must contain at least one digit!";
-        }
+        message = "This password is invalid:\nit must contain at least one digit!";
         delete[] _pass;
         return false;
     }
@@ -116,9 +105,7 @@ bool PasswordValidator::validatePassword(const QString &password_, QString& mod,
     if (!specialCount)
     {
         if (mod == "manual")
-        {
-            message = "This password is invalid!\nIt must contain at least on special character:\n!, @, #, $, %, ^, &, *, (, ), _, +, -, = ";
-        }
+        message = "This password is invalid!\nIt must contain at least on special character:\n!, @, #, $, %, ^, &, *, (, ), _, +, -, = ";
         delete[] _pass;
         return false;
     }

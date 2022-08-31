@@ -14,7 +14,7 @@ void FileWriter::slt_writeOneRecord(QString& message)
 bool FileWriter::writeOneRecord(QString &message)
 {
     QFile file(filename);
-    if (!file.open(QFile::WriteOnly))
+    if (!file.open(QFile::WriteOnly | QFile::Append))
     {
         message = "Error! Could not save the record!";
         return false;
@@ -26,15 +26,10 @@ bool FileWriter::writeOneRecord(QString &message)
         return false;
     }
 
-    std::_Fwd_list_iterator<Record> toWrite = _recordList->begin();
-    for (; toWrite._M_next() != _recordList->end(); )
-    {
-        toWrite = toWrite._M_next();
-    }
+    auto toWrite = _recordList->cbegin();
 
     QTextStream fout(&file);
-    fout << toWrite->resource + "\n" + toWrite->login + "\n" + toWrite->password + "\n\n";
-    message = "Record successfully saved";
+    fout << toWrite->resource + "\n" + toWrite->login + "\n" + toWrite->password + "\n";
     file.close();
     return true;
 }

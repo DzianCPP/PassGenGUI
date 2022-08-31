@@ -30,18 +30,28 @@ signals:
     void sgn_generatePasswordAuto();
     void sgn_generateAutoPassword(PasswordValidator*, QString&, QString&);
     void sgn_writeOneFile(QString&);
+    void sgn_readFromFile();
+    void sgn_showLastAddedRecord();
+    void sgn_findRecord(const QString& keyword_, QString& message_);
 
 private slots:
     void m_slt_sendInfoToRecordCreator();
     void slt_sendPasswordForValidation();
     void slt_getValidationResults(bool result_);
     void m_slt_setModAuto();
+    void m_slt_setAddOrEditToAdd();
+    void m_slt_setAddOrEditToEdit();
     void slt_generatePasswordAuto();
     void slt_getAutoPassword(QString* _password);
     void slt_writeOneRecord();
+    void slt_showLastAddedRecord(const QString& resource_, const QString& login_, const QString& password_);
+    void slt_getInfoToShowLastAddedRecord();
+    void slt_findRecord();
+    void slt_getDataOfFoundRecord(QString& resource_, QString& login_, QString& password_, QString& message_, bool searchResults);
 
 private:
     QString mod = {"manual"};
+    QString add_or_edit = {"add"};
     QString message = {};
 
     QGridLayout* m_mainLayout;
@@ -65,8 +75,6 @@ private:
     myPushButton* m_deleteButton;
     myPushButton* m_sureButton;
     myPushButton* m_cancelButton;
-
-    QComboBox* m_editByComboBox;
 
     QLabel* m_rightScreenLabel;
     QLabel* m_addResourceLabel;

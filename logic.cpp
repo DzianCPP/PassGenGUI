@@ -29,3 +29,21 @@ FileWriter *logic::getFileWriter()
     FileWriter* thisFileWriter = &fileWriter;
     return thisFileWriter;
 }
+
+FileReader *logic::getFileReader()
+{
+    FileReader* thisFileReader = &fileReader;
+    return thisFileReader;
+}
+
+RecordShower* logic::getRecordShower()
+{
+    RecordShower* thisRecordShower = &this->recordShower;
+    return thisRecordShower;
+}
+
+RecordFinder *logic::getRecordFinder()
+{
+    RecordFinder* thisRecordFinder = &this->recordFinder;
+    return thisRecordFinder;
+}

@@ -22,7 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //labels
 
-    m_rightScreenLabel = new QLabel;
+    m_rightScreenLabel = createLabel("");
+    m_rightScreenLabel->setAlignment(Qt::AlignLeft);
     m_rightScreenLabel->setStyleSheet(" background-color: white; border: 1px solid black; ");
     m_addResourceLabel = createLabel("Resource:");
     m_addLoginLabel = createLabel("Login:");
@@ -31,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_editLoginLabel = createLabel("Login:");
     m_editPasswordLabel = createLabel("Password:");
     m_searchLabel = createLabel("Search:");
-    m_messageLabel = createLabel("Message");
+    m_messageLabel = createLabel("");
     m_messageLabel->setAlignment(Qt::AlignLeft);
     m_messageLabel->setStyleSheet(" border-width: 1px;"
                              " border-style: solid;"
@@ -71,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_editPasswordAutoButton = createButton("Auto");
     m_checkedEditButton = createButton("Checked");
     m_saveEditButton = createButton("Save");
+    m_saveEditButton->setDisabled(true);
     m_findButton = createButton("Find");
     m_quitButton = createButton("Quit");
     m_editByChooseButton = createButton("Choose");
@@ -78,29 +80,59 @@ MainWindow::MainWindow(QWidget *parent)
     m_sureButton = createButton("Sure");
     m_cancelButton = createButton("Cancel");
 
-    //combo box
-
-    m_editByComboBox = createComboBox("Resource:", "Login:");
-
     //scroll bars
 
     m_rightScreenScrollBar = new QScrollBar;
 
     //connections
 
+    connect(this, SIGNAL(sgn_readFromFile()), _logic.getFileReader(), SLOT(slt_readFromFile()));
+    connect(_logic.getFileReader(),    SIGNAL(sgn_createNewRecord(QString,QString,QString)),
+            _logic.getRecordCreator(), SLOT(slt_createNewRecord(QString,QString,QString)));
+
     connect(m_checkedAddingButton, SIGNAL(clicked()), this, SLOT(slt_sendPasswordForValidation()));
-    connect(this, SIGNAL(sgn_sendPasswordForValidation(QString,QString&,QString&)), _logic.getPasswordValidator(), SLOT(slt_validatePassword(QString,QString&,QString&)));
+    connect(this,                          SIGNAL(sgn_sendPasswordForValidation(QString,QString&,QString&)),
+            _logic.getPasswordValidator(), SLOT(slt_validatePassword(QString,QString&,QString&)));
     connect(_logic.getPasswordValidator(), SIGNAL(sgn_sendValidationResults(bool)), this, SLOT(slt_getValidationResults(bool)));
+
     connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(m_slt_sendInfoToRecordCreator()));
-    connect(m_saveAddedButton, SIGNAL(clicked()), m_saveAddedButton, SLOT(m_slt_setEnabledFALSE()));
-    connect(this, SIGNAL(sgn_sendInfoToRecordCreator(QString,QString,QString)), _logic.getRecordCreator(), SLOT(slt_createNewRecord(QString,QString,QString)));
+    connect(this,                      SIGNAL(sgn_sendInfoToRecordCreator(QString,QString,QString)),
+            _logic.getRecordCreator(), SLOT(slt_createNewRecord(QString,QString,QString)));
+
     connect(m_autoPasswordButton, SIGNAL(clicked()), this, SLOT(m_slt_setModAuto()));
+    connect(m_autoPasswordButton, SIGNAL(clicked()), this, SLOT(m_slt_setAddOrEditToAdd()));
     connect(m_autoPasswordButton, SIGNAL(clicked()), this, SLOT(slt_generatePasswordAuto()));
-    connect(this, SIGNAL(sgn_generateAutoPassword(PasswordValidator*,QString&,QString&)), _logic.getAutoPasswordGenerator(), SLOT(slt_generatePasswordAuto(PasswordValidator*,QString&,QString&)));
-    connect(_logic.getAutoPasswordGenerator(), SIGNAL(sgn_sendAutoPassword(QString*)), this, SLOT(slt_getAutoPassword(QString*)));
+    connect(this, SIGNAL(sgn_generateAutoPassword(PasswordValidator*,QString&,QString&)), _logic.getAutoPasswordGenerator(),
+                  SLOT(slt_generatePasswordAuto(PasswordValidator*,QString&,QString&)));
+
     connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(slt_writeOneRecord()));
     connect(this, SIGNAL(sgn_writeOneFile(QString&)), _logic.getFileWriter(), SLOT(slt_writeOneRecord(QString&)));
     connect(_logic.getFileWriter(), SIGNAL(sgn_writeOneRecordResults(bool)), this, SLOT(slt_getValidationResults(bool)));
+
+    connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(slt_getInfoToShowLastAddedRecord()));
+    connect(this, SIGNAL(sgn_showLastAddedRecord()), _logic.getRecordShower(), SLOT(slt_sendInfoToShow()));
+    connect(_logic.getRecordShower(), SIGNAL(sgn_showNewRecord(QString,QString,QString)),
+            this,                     SLOT(slt_showLastAddedRecord(QString,QString,QString)));
+
+    connect(m_saveAddedButton, SIGNAL(clicked()), m_addResourceLine, SLOT(clear()));
+    connect(m_saveAddedButton, SIGNAL(clicked()), m_addLoginLine, SLOT(clear()));
+    connect(m_saveAddedButton, SIGNAL(clicked()), m_addPasswordLine, SLOT(clear()));
+
+    connect(m_saveAddedButton, SIGNAL(clicked()), m_saveAddedButton, SLOT(m_slt_setEnabledFALSE()));
+
+    connect(m_editByChooseButton, SIGNAL(clicked()), this, SLOT(slt_findRecord()));
+    connect(this, SIGNAL(sgn_findRecord(QString,QString&)), _logic.getRecordFinder(), SLOT(slt_findRecord(QString,QString&)));
+    connect(_logic.getRecordFinder(), SIGNAL(sgn_sendDataOfFoundRecord(QString&,QString&,QString&,QString&,bool)),
+            this,                     SLOT(slt_getDataOfFoundRecord(QString&,QString&,QString&,QString&,bool)));
+
+    connect(m_editPasswordAutoButton, SIGNAL(clicked()), this, SLOT(m_slt_setAddOrEditToEdit()));
+    connect(m_editPasswordAutoButton, SIGNAL(clicked()), this, SLOT(m_slt_setModAuto()));
+    connect(m_editPasswordAutoButton, SIGNAL(clicked()), this, SLOT(slt_generatePasswordAuto()));
+    connect(this, SIGNAL(sgn_generateAutoPassword(PasswordValidator*,QString&,QString&)), _logic.getAutoPasswordGenerator(),
+                  SLOT(slt_generatePasswordAuto(PasswordValidator*,QString&,QString&)));
+    connect(_logic.getAutoPasswordGenerator(), SIGNAL(sgn_sendAutoPassword(QString*)), this, SLOT(slt_getAutoPassword(QString*)));
+    connect(m_checkedEditButton, SIGNAL(clicked()), this, SLOT(slt_sendPasswordForValidation()));
+    connect(m_saveEditButton, SIGNAL(clicked()), m_saveEditButton, SLOT(m_slt_setEnabledFALSE()));
 
     //adding widgets
 
@@ -123,8 +155,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_addButtonLayout->addWidget(m_saveAddedButton,       4, 2, 1, 3);
 
     m_editButtonLayout->addWidget(m_editLabel,                0, 0, 1, 5);
-    m_editButtonLayout->addWidget(m_editByComboBox,           1, 0, 1, 2);
-    m_editButtonLayout->addWidget(m_editByLine,               1, 2, 1, 2);
+    m_editButtonLayout->addWidget(m_editByLine,               1, 0, 1, 4);
     m_editButtonLayout->addWidget(m_editByChooseButton,       1, 4, 1, 1);
     m_editButtonLayout->addWidget(m_editResourceLabel,        2, 0, 1, 2);
     m_editButtonLayout->addWidget(m_editResourceLine,         2, 2, 1, 3);
@@ -155,6 +186,7 @@ MainWindow::MainWindow(QWidget *parent)
     //setting layouts
 
     setLayout(m_mainLayout);
+    emit this->sgn_readFromFile();
 }
 
 MainWindow::~MainWindow()
@@ -200,33 +232,67 @@ void MainWindow::m_slt_sendInfoToRecordCreator()
     QString login_ = this->m_addLoginLine->text();
     QString password_ = this->m_addPasswordLine->text();
 
-    emit this->sgn_sendInfoToRecordCreator(resource_, login_, password_);
+    emit this->sgn_sendInfoToRecordCreator(login_, resource_, password_);
 }
 
 void MainWindow::slt_sendPasswordForValidation()
 {
     m_messageLabel->clear();
-    emit sgn_sendPasswordForValidation(this->m_addPasswordLine->text(), this->mod, this->message);
+    if (add_or_edit == "add")
+    {
+        emit sgn_sendPasswordForValidation(this->m_addPasswordLine->text(), this->mod, this->message);
+    }
+
+    else
+    {
+        emit sgn_sendPasswordForValidation(this->m_editPasswordLine->text(), this->mod, this->message);
+    }
 }
 
 void MainWindow::slt_getValidationResults(bool result_)
 {
-    if (result_ == true)
+    if (add_or_edit == "add")
     {
-        m_saveAddedButton->setEnabled(true);
+        if (result_ == true)
+        {
+             m_saveAddedButton->setEnabled(true);
+             m_messageLabel->setText(message);
+              return;
+        }
+
+         m_saveAddedButton->setDisabled(true);
+         m_messageLabel->setText(message);
+         return;
+    }
+
+    else
+    {
+        if (result_ == true)
+        {
+            m_saveEditButton->setEnabled(true);
+            m_messageLabel->setText(message);
+            return;
+        }
+
+        m_saveEditButton->setDisabled(true);
         m_messageLabel->setText(message);
         return;
     }
-
-    m_saveAddedButton->setDisabled(true);
-    m_messageLabel->setText(message);
-    return;
-
 }
 
 void MainWindow::m_slt_setModAuto()
 {
     this->mod = "auto";
+}
+
+void MainWindow::m_slt_setAddOrEditToAdd()
+{
+    this->add_or_edit = "add";
+}
+
+void MainWindow::m_slt_setAddOrEditToEdit()
+{
+    this->add_or_edit = "edit";
 }
 
 void MainWindow::slt_generatePasswordAuto()
@@ -236,10 +302,52 @@ void MainWindow::slt_generatePasswordAuto()
 
 void MainWindow::slt_getAutoPassword(QString* _password)
 {
-    m_addPasswordLine->setText(*_password);
+    if (add_or_edit == "add")
+    {
+        m_addPasswordLine->setText(*_password);
+    }
+
+    else
+    {
+        m_editPasswordLine->setText(*_password);
+    }
 }
 
 void MainWindow::slt_writeOneRecord()
 {
     emit sgn_writeOneFile(this->message);
+}
+
+void MainWindow::slt_showLastAddedRecord(const QString &resource_, const QString &login_, const QString &password_)
+{
+    this->m_rightScreenLabel->setText("Resource: " + resource_ + "\nLogin: " + login_ + "\nPassword: " + password_);
+}
+
+void MainWindow::slt_getInfoToShowLastAddedRecord()
+{
+    emit sgn_showLastAddedRecord();
+}
+
+void MainWindow::slt_findRecord()
+{
+    emit sgn_findRecord(this->m_editByLine->text(), this->message);
+}
+
+void MainWindow::slt_getDataOfFoundRecord(QString &resource_, QString &login_, QString &password_, QString &message_, bool searchResults)
+{
+    if (searchResults)
+    {
+        this->m_editResourceLine->setText(resource_);
+        this->m_editLoginLine->setText(login_);
+        this->m_editPasswordLine->setText(password_);
+        this->m_messageLabel->setText(message_);
+    }
+
+    else
+    {
+        this->m_editResourceLine->clear();
+        this->m_editLoginLine->clear();
+        this->m_editPasswordLine->clear();
+        this->m_messageLabel->setText(message_);
+    }
 }
