@@ -12,10 +12,13 @@ public:
     explicit RecordEditor(QObject *parent = nullptr);
 
 signals:
+    void sgn_sendResultsOfEditing(bool value, QString& newResource_, QString& newLogin_, QString& newPassword_);
 
 public slots:
-    bool editRecord(std::forward_list<Record>::iterator& toEdit);
+    void slt_editRecord(QList<Record>::iterator toEdit, QString& newResource_, QString& newLogin_, QString& newPassword_, QString& message_);
 
+private:
+    bool editRecord(QList<Record>::iterator& toEdit, QString& newResource_, QString& newLogin_, QString& newPassword_, QString& message_);
 };
 
 #endif // RECORDEDITOR_H

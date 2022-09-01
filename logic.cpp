@@ -47,3 +47,15 @@ RecordFinder *logic::getRecordFinder()
     RecordFinder* thisRecordFinder = &this->recordFinder;
     return thisRecordFinder;
 }
+
+RecordEditor *logic::getRecordEditor()
+{
+    RecordEditor* thisRecordEditor = &this->recordEditor;
+    return thisRecordEditor;
+}
+
+AllRecordShower *logic::getAllRecordShower()
+{
+    AllRecordShower* thisAllRecordShower = &this->allRecordShower;
+    return thisAllRecordShower;
+}

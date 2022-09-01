@@ -8,6 +8,8 @@
 #include "filereader.h"
 #include "recordshower.h"
 #include "recordfinder.h"
+#include "recordeditor.h"
+#include "allrecordshower.h"
 
 #include <QObject>
 
@@ -23,6 +25,8 @@ public:
     FileReader* getFileReader();
     RecordShower* getRecordShower();
     RecordFinder* getRecordFinder();
+    RecordEditor* getRecordEditor();
+    AllRecordShower* getAllRecordShower();
 
 signals:
 
@@ -34,6 +38,8 @@ private:
     FileReader fileReader;
     RecordShower recordShower;
     RecordFinder recordFinder;
+    RecordEditor recordEditor;
+    AllRecordShower allRecordShower;
 
 
 };

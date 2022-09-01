@@ -8,8 +8,9 @@ RecordShower::RecordShower(QObject *parent)
 
 void RecordShower::slt_sendInfoToShow()
 {
-    auto toShow = _recordList->cbegin();
-    if (toShow._M_node != nullptr)
+    auto toShow = _recordList->end();
+    --toShow;
+    if (toShow != _recordList->end())
     {
         emit sgn_showNewRecord(toShow->resource, toShow->login, toShow->password);
     }

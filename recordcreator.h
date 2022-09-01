@@ -18,7 +18,7 @@ public slots:
     void slt_createNewRecord(const QString& login_, const QString& resource_, const QString& password_);
 
 private:
-    std::forward_list<Record>* recordList_ = _recordList;
+    QList<Record>* recordList_ = _recordList;
 };
 
 #endif // RECORDCREATOR_H

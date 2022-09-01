@@ -2,7 +2,7 @@
 #define DATA_CPP
 #include "data.h"
 
-std::forward_list<Record>* _recordList = new std::forward_list<Record>;
+QList<Record>* _recordList = new QList<Record>;
 const QString filename = "records.bin";
 
 #endif // DATA_CPP

@@ -13,13 +13,13 @@ public:
     explicit FileWriter(QObject *parent = nullptr);
 
 signals:
-    void sgn_writeOneRecordResults(bool value);
+    void sgn_writeRecordsResults(bool value);
 
 public slots:
-    void slt_writeOneRecord(QString& message);
+    void slt_writeRecords(QString& message);
 
 private:
-    bool writeOneRecord(QString& message);
+    bool writeRecords(QString& message);
 
 };
 

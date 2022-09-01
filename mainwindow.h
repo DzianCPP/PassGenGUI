@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QScrollBar>
+#include <QScrollArea>
 #include "mypushbutton.h"
 #include "logic.h"
 
@@ -33,6 +34,8 @@ signals:
     void sgn_readFromFile();
     void sgn_showLastAddedRecord();
     void sgn_findRecord(const QString& keyword_, QString& message_);
+    void sgn_editRecord(QList<Record>::iterator toEdit, QString& newResource_, QString& newLogin_, QString& newPassword_, QString& message_);
+    void sgn_askForInfoToShowAllRecords();
 
 private slots:
     void m_slt_sendInfoToRecordCreator();
@@ -43,11 +46,15 @@ private slots:
     void m_slt_setAddOrEditToEdit();
     void slt_generatePasswordAuto();
     void slt_getAutoPassword(QString* _password);
-    void slt_writeOneRecord();
+    void slt_writeRecords();
     void slt_showLastAddedRecord(const QString& resource_, const QString& login_, const QString& password_);
     void slt_getInfoToShowLastAddedRecord();
     void slt_findRecord();
     void slt_getDataOfFoundRecord(QString& resource_, QString& login_, QString& password_, QString& message_, bool searchResults);
+    void slt_editRecord();
+    void slt_getEditedRecord(bool result, QString& resource_, QString& login_, QString& password_);
+    void slt_askForInfoToShowAllRecords();
+    void slt_showAllRecords(QString& resource_, QString& login_, QString& password_);
 
 private:
     QString mod = {"manual"};
@@ -101,6 +108,7 @@ private:
     QLineEdit* m_removeByLine;
 
     QScrollBar* m_rightScreenScrollBar;
+    QScrollArea* m_rightScreenScrollArea;
 
     logic _logic;
 };

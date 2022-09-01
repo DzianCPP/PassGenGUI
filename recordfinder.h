@@ -3,13 +3,14 @@
 
 #include <QObject>
 #include "data.h"
+#include <QDebug>
 
 class RecordFinder : public QObject
 {
     Q_OBJECT
 public:
     explicit RecordFinder(QObject *parent = nullptr);
-    std::forward_list<Record>::iterator getFoundRecord();
+    QList<Record>::iterator getFoundRecord();
 
 signals:
     void sgn_sendDataOfFoundRecord(QString&, QString&, QString&, QString& message_, bool searchResults);
@@ -19,8 +20,7 @@ public slots:
 
 private:
     bool findRecord(QString& resource_, QString& login_, QString& password_, QString& message_, const QString& keyword_);
-    std::forward_list<Record>::iterator toFind = _recordList->begin();
+    QList<Record>::iterator thisToFind = _recordList->begin();
 
 };
-
 #endif // RECORDFINDER_H

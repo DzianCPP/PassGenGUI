@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_rightScreenLabel = createLabel("");
     m_rightScreenLabel->setAlignment(Qt::AlignLeft);
-    m_rightScreenLabel->setStyleSheet(" background-color: white; border: 1px solid black; ");
+    m_rightScreenLabel->setStyleSheet(" background-color: white; border: 1px solid white; ");
     m_addResourceLabel = createLabel("Resource:");
     m_addLoginLabel = createLabel("Login:");
     m_addPasswordLabel = createLabel("Password:");
@@ -84,6 +84,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_rightScreenScrollBar = new QScrollBar;
 
+    //scroll areas
+
+    m_rightScreenScrollArea = new QScrollArea;
+
+    m_rightScreenScrollArea->setWidget(m_rightScreenLabel);
+    m_rightScreenScrollArea->setWidgetResizable(true);
+    m_rightScreenScrollArea->setStyleSheet(" background-color: white; border: 1px solid white; ");
+    m_rightScreenScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
     //connections
 
     connect(this, SIGNAL(sgn_readFromFile()), _logic.getFileReader(), SLOT(slt_readFromFile()));
@@ -105,9 +114,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(sgn_generateAutoPassword(PasswordValidator*,QString&,QString&)), _logic.getAutoPasswordGenerator(),
                   SLOT(slt_generatePasswordAuto(PasswordValidator*,QString&,QString&)));
 
-    connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(slt_writeOneRecord()));
-    connect(this, SIGNAL(sgn_writeOneFile(QString&)), _logic.getFileWriter(), SLOT(slt_writeOneRecord(QString&)));
-    connect(_logic.getFileWriter(), SIGNAL(sgn_writeOneRecordResults(bool)), this, SLOT(slt_getValidationResults(bool)));
+    connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(slt_writeRecords()));
+    connect(this, SIGNAL(sgn_writeOneFile(QString&)), _logic.getFileWriter(), SLOT(slt_writeRecords(QString&)));
 
     connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(slt_getInfoToShowLastAddedRecord()));
     connect(this, SIGNAL(sgn_showLastAddedRecord()), _logic.getRecordShower(), SLOT(slt_sendInfoToShow()));
@@ -132,7 +140,26 @@ MainWindow::MainWindow(QWidget *parent)
                   SLOT(slt_generatePasswordAuto(PasswordValidator*,QString&,QString&)));
     connect(_logic.getAutoPasswordGenerator(), SIGNAL(sgn_sendAutoPassword(QString*)), this, SLOT(slt_getAutoPassword(QString*)));
     connect(m_checkedEditButton, SIGNAL(clicked()), this, SLOT(slt_sendPasswordForValidation()));
+
+    connect(m_saveEditButton, SIGNAL(clicked()), this, SLOT(slt_editRecord()));
+    connect(this,                     SIGNAL(sgn_editRecord(QList<Record>::iterator,QString&,QString&,QString&,QString&)),
+            _logic.getRecordEditor(), SLOT(slt_editRecord(QList<Record>::iterator,QString&,QString&,QString&,QString&)));
+    connect(_logic.getRecordEditor(), SIGNAL(sgn_sendResultsOfEditing(bool,QString&,QString&,QString&)),
+            this, SLOT(slt_getEditedRecord(bool,QString&,QString&,QString&)));
+    connect(m_saveEditButton, &myPushButton::clicked, this, &MainWindow::slt_writeRecords);
+    connect(this, &MainWindow::sgn_writeOneFile, _logic.getFileWriter(), &FileWriter::slt_writeRecords);
+    connect(_logic.getFileWriter(), SIGNAL(sgn_writeRecordsResults(bool)), this, SLOT(slt_getValidationResults(bool)));
+    connect(m_saveEditButton, SIGNAL(clicked()), m_editResourceLine, SLOT(clear()));
+    connect(m_saveEditButton, SIGNAL(clicked()), m_editLoginLine, SLOT(clear()));
+    connect(m_saveEditButton, SIGNAL(clicked()), m_editPasswordLine, SLOT(clear()));
     connect(m_saveEditButton, SIGNAL(clicked()), m_saveEditButton, SLOT(m_slt_setEnabledFALSE()));
+
+    connect(m_showButton, SIGNAL(clicked()), m_rightScreenLabel, SLOT(clear()));
+    connect(m_showButton, SIGNAL(clicked()), this, SLOT(slt_askForInfoToShowAllRecords()));
+    connect(this, SIGNAL(sgn_askForInfoToShowAllRecords()), _logic.getAllRecordShower(), SLOT(slt_extractInfoToShow()));
+    connect(_logic.getAllRecordShower(), SIGNAL(sgn_sendInfoToShow(QString&,QString&,QString&)), this, SLOT(slt_showAllRecords(QString&,QString&,QString&)));
+
+    connect(m_quitButton, SIGNAL(clicked()), this, SLOT(close()));
 
     //adding widgets
 
@@ -180,8 +207,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_messageLayout->addWidget(m_messageLabel,            0, 0, 4, 4);
 
-    m_rightLayout->addWidget(m_rightScreenLabel,          0, 0, 9, 8);
-    m_rightLayout->addWidget(m_rightScreenScrollBar,      0, 8, 9, 1);
+    //m_rightLayout->addWidget(m_rightScreenLabel,          0, 0, 9, 9);
+    m_rightLayout->addWidget(m_rightScreenScrollArea,     0, 0, 9, 9);
+    //m_rightLayout->addWidget(m_rightScreenScrollBar,      0, 8, 9, 1);
 
     //setting layouts
 
@@ -313,7 +341,7 @@ void MainWindow::slt_getAutoPassword(QString* _password)
     }
 }
 
-void MainWindow::slt_writeOneRecord()
+void MainWindow::slt_writeRecords()
 {
     emit sgn_writeOneFile(this->message);
 }
@@ -350,4 +378,40 @@ void MainWindow::slt_getDataOfFoundRecord(QString &resource_, QString &login_, Q
         this->m_editPasswordLine->clear();
         this->m_messageLabel->setText(message_);
     }
+}
+
+void MainWindow::slt_editRecord()
+{
+    QString thisResource = m_editResourceLine->text();
+    QString thisLogin = m_editLoginLine->text();
+    QString thisPassword = m_editPasswordLine->text();
+    emit sgn_editRecord(_logic.getRecordFinder()->getFoundRecord(), thisResource,
+                                            thisLogin, thisPassword, this->message);
+}
+
+void MainWindow::slt_getEditedRecord(bool result, QString &resource_, QString &login_, QString &password_)
+{
+    m_messageLabel->setText(message);
+    if (!result)
+    {
+        m_editResourceLine->clear();
+        m_editLoginLine->clear();
+        m_editPasswordLine->clear();
+        return;
+    }
+
+    m_rightScreenLabel->setText("Resource: " + resource_ + "\nLogin: " + login_ + "\nPassword: " + password_);
+    return;
+}
+
+void MainWindow::slt_askForInfoToShowAllRecords()
+{
+    emit sgn_askForInfoToShowAllRecords();
+}
+
+void MainWindow::slt_showAllRecords(QString &resource_, QString &login_, QString &password_)
+{
+    QString temp = m_rightScreenLabel->text();
+    temp.append("Resource: " + resource_ + "\nLogin: " + login_ + "\nPassword: " + password_ + "\n\n");
+    m_rightScreenLabel->setText(temp);
 }

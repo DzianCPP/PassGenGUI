@@ -39,6 +39,8 @@ set(PROJECT_SOURCES
 	recordfinder.cpp
 	recordeditor.h
 	recordeditor.cpp
+	allrecordshower.h
+	allrecordshower.cpp
 
 	data.h
 	data.cpp

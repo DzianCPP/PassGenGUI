@@ -6,9 +6,9 @@ RecordFinder::RecordFinder(QObject *parent)
 
 }
 
-std::forward_list<Record>::iterator RecordFinder::getFoundRecord()
+QList<Record>::iterator RecordFinder::getFoundRecord()
 {
-    return this->toFind;
+    return this->thisToFind;
 }
 
 void RecordFinder::slt_findRecord(const QString &keyword_, QString &message_)
@@ -19,19 +19,28 @@ void RecordFinder::slt_findRecord(const QString &keyword_, QString &message_)
 
 bool RecordFinder::findRecord(QString &resource_, QString &login_, QString &password_, QString& message_, const QString &keyword_)
 {
-    for (; ;)
+    QList<Record>::iterator toFind = _recordList->begin();
+    if (_recordList->empty())
     {
-        if (toFind._M_node != nullptr)
+        message_ = "No records";
+        return false;
+    }
+
+    for (auto it = _recordList->begin(); ; )
+    {
+        ++it;
+        if (!(toFind->resource.contains(keyword_)) && !(toFind->login.contains(keyword_)))
         {
-            if (toFind->resource == keyword_ || toFind->login == keyword_)
+            if (it != _recordList->end())
             {
-                resource_ = toFind->resource;
-                login_ = toFind->login;
-                password_ = toFind->password;
-                message_ = "This record suits your request";
-                return true;
+                toFind = it;
             }
-            ++toFind;
+
+            else
+            {
+                message_ = "No records found";
+                return false;
+            }
         }
 
         else
@@ -39,6 +48,11 @@ bool RecordFinder::findRecord(QString &resource_, QString &login_, QString &pass
             break;
         }
     }
-    message_ = "No records were found";
-    return false;
+
+    resource_ = toFind->resource;
+    login_ = toFind->login;
+    password_ = toFind->password;
+    message_ = "This record suits your request";
+    this->thisToFind = toFind;
+    return true;
 }
