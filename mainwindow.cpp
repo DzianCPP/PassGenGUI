@@ -5,7 +5,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
     this->setMinimumSize(1050, 400);
-    this->setStyleSheet("background-color: white; ");
 
     //line_edits
 
@@ -24,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_rightScreenLabel = createLabel("");
     m_rightScreenLabel->setAlignment(Qt::AlignLeft);
-    m_rightScreenLabel->setStyleSheet(" background-color: white; border: 1px solid white; ");
     m_addResourceLabel = createLabel("Resource:");
     m_addLoginLabel = createLabel("Login:");
     m_addPasswordLabel = createLabel("Password:");
@@ -33,22 +31,12 @@ MainWindow::MainWindow(QWidget *parent)
     m_editPasswordLabel = createLabel("Password:");
     m_searchLabel = createLabel("Search:");
     m_messageLabel = createLabel("");
-    m_messageLabel->setAlignment(Qt::AlignLeft);
-    m_messageLabel->setStyleSheet(" border-width: 1px;"
-                             " border-style: solid;"
-                             " border-color: black;" );
+    m_messageLabel->setStyleSheet("background-color: rgb(0, 0, 0);"
+                                  "color: rgb(244, 244, 246); "
+                                  "border-radius: 15px; ");
+    m_messageLabel->setAlignment(Qt::AlignCenter);
     m_addLabel = createLabel("Add a new record");
-    m_addLabel->setStyleSheet(" background-color: grey; "
-                         " border: 1px solid aquamarine; "
-                         " border-radius: 5px; "
-                         " color: white; ");
-    m_addLabel->setAlignment(Qt::AlignCenter);
     m_editLabel = createLabel("Edit a record");
-    m_editLabel->setStyleSheet(" background-color: grey; "
-                               " border: 1px solid aquamarine; "
-                               " border-radius: 5px; "
-                               " color: white; ");
-    m_editLabel->setAlignment(Qt::AlignCenter);
     m_removeKeywordLabel = createLabel("Keyword:");
     m_findKeywordLabel = createLabel("Keyword:");
 
@@ -57,10 +45,14 @@ MainWindow::MainWindow(QWidget *parent)
     m_mainLayout         = new QGridLayout;
     m_leftLayout         = new QGridLayout;
     m_rightLayout        = new QGridLayout;
+    m_rightLayout->setColumnMinimumWidth(0, 200);
     m_addButtonLayout    = new QGridLayout;
     m_smallButtonsLayout = new QGridLayout;
     m_editButtonLayout   = new QGridLayout;
+    for (int i = 0; i < 5; i++) m_editButtonLayout->setColumnMinimumWidth(i, 50);
+    for (int i = 0; i < 5; i++) m_editButtonLayout->setColumnStretch(i, 200);
     m_messageLayout      = new QGridLayout;
+    m_messageLayout->setColumnMinimumWidth(0, 250);
 
     //buttons
 
@@ -73,16 +65,12 @@ MainWindow::MainWindow(QWidget *parent)
     m_checkedEditButton = createButton("Checked");
     m_saveEditButton = createButton("Save");
     m_saveEditButton->setDisabled(true);
-    m_findButton = createButton("Find");
     m_quitButton = createButton("Quit");
-    m_editByChooseButton = createButton("Choose");
+    m_findButton = createButton("Find");
     m_deleteButton = createButton("Delete");
     m_sureButton = createButton("Sure");
+    m_sureButton->setDisabled(true);
     m_cancelButton = createButton("Cancel");
-
-    //scroll bars
-
-    m_rightScreenScrollBar = new QScrollBar;
 
     //scroll areas
 
@@ -90,8 +78,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_rightScreenScrollArea->setWidget(m_rightScreenLabel);
     m_rightScreenScrollArea->setWidgetResizable(true);
-    m_rightScreenScrollArea->setStyleSheet(" background-color: white; border: 1px solid white; ");
     m_rightScreenScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
 
     //connections
 
@@ -99,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_logic.getFileReader(),    SIGNAL(sgn_createNewRecord(QString,QString,QString)),
             _logic.getRecordCreator(), SLOT(slt_createNewRecord(QString,QString,QString)));
 
+    connect(m_checkedAddingButton, SIGNAL(clicked()), this, SLOT(m_slt_setAddOrEditToAdd()));
     connect(m_checkedAddingButton, SIGNAL(clicked()), this, SLOT(slt_sendPasswordForValidation()));
     connect(this,                          SIGNAL(sgn_sendPasswordForValidation(QString,QString&,QString&)),
             _logic.getPasswordValidator(), SLOT(slt_validatePassword(QString,QString&,QString&)));
@@ -115,7 +104,6 @@ MainWindow::MainWindow(QWidget *parent)
                   SLOT(slt_generatePasswordAuto(PasswordValidator*,QString&,QString&)));
 
     connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(slt_writeRecords()));
-    connect(this, SIGNAL(sgn_writeOneFile(QString&)), _logic.getFileWriter(), SLOT(slt_writeRecords(QString&)));
 
     connect(m_saveAddedButton, SIGNAL(clicked()), this, SLOT(slt_getInfoToShowLastAddedRecord()));
     connect(this, SIGNAL(sgn_showLastAddedRecord()), _logic.getRecordShower(), SLOT(slt_sendInfoToShow()));
@@ -126,9 +114,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_saveAddedButton, SIGNAL(clicked()), m_addLoginLine, SLOT(clear()));
     connect(m_saveAddedButton, SIGNAL(clicked()), m_addPasswordLine, SLOT(clear()));
 
-    connect(m_saveAddedButton, SIGNAL(clicked()), m_saveAddedButton, SLOT(m_slt_setEnabledFALSE()));
-
-    connect(m_editByChooseButton, SIGNAL(clicked()), this, SLOT(slt_findRecord()));
+    connect(m_findButton, SIGNAL(clicked()), this, SLOT(slt_findRecord()));
     connect(this, SIGNAL(sgn_findRecord(QString,QString&)), _logic.getRecordFinder(), SLOT(slt_findRecord(QString,QString&)));
     connect(_logic.getRecordFinder(), SIGNAL(sgn_sendDataOfFoundRecord(QString&,QString&,QString&,QString&,bool)),
             this,                     SLOT(slt_getDataOfFoundRecord(QString&,QString&,QString&,QString&,bool)));
@@ -139,6 +125,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(sgn_generateAutoPassword(PasswordValidator*,QString&,QString&)), _logic.getAutoPasswordGenerator(),
                   SLOT(slt_generatePasswordAuto(PasswordValidator*,QString&,QString&)));
     connect(_logic.getAutoPasswordGenerator(), SIGNAL(sgn_sendAutoPassword(QString*)), this, SLOT(slt_getAutoPassword(QString*)));
+    connect(m_checkedEditButton, SIGNAL(clicked()), this, SLOT(m_slt_setAddOrEditToEdit()));
     connect(m_checkedEditButton, SIGNAL(clicked()), this, SLOT(slt_sendPasswordForValidation()));
 
     connect(m_saveEditButton, SIGNAL(clicked()), this, SLOT(slt_editRecord()));
@@ -147,7 +134,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_logic.getRecordEditor(), SIGNAL(sgn_sendResultsOfEditing(bool,QString&,QString&,QString&)),
             this, SLOT(slt_getEditedRecord(bool,QString&,QString&,QString&)));
     connect(m_saveEditButton, &myPushButton::clicked, this, &MainWindow::slt_writeRecords);
-    connect(this, &MainWindow::sgn_writeOneFile, _logic.getFileWriter(), &FileWriter::slt_writeRecords);
+    connect(this, &MainWindow::sgn_writeRecords, _logic.getFileWriter(), &FileWriter::slt_writeRecords);
     connect(_logic.getFileWriter(), SIGNAL(sgn_writeRecordsResults(bool)), this, SLOT(slt_getValidationResults(bool)));
     connect(m_saveEditButton, SIGNAL(clicked()), m_editResourceLine, SLOT(clear()));
     connect(m_saveEditButton, SIGNAL(clicked()), m_editLoginLine, SLOT(clear()));
@@ -159,16 +146,26 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(sgn_askForInfoToShowAllRecords()), _logic.getAllRecordShower(), SLOT(slt_extractInfoToShow()));
     connect(_logic.getAllRecordShower(), SIGNAL(sgn_sendInfoToShow(QString&,QString&,QString&)), this, SLOT(slt_showAllRecords(QString&,QString&,QString&)));
 
+    connect(m_deleteButton, SIGNAL(clicked()), m_sureButton, SLOT(m_slt_setEnabledTRUE()));
+    connect(m_sureButton, SIGNAL(clicked()), this, SLOT(slt_deleteRecord()));
+    connect(this, SIGNAL(sgn_deleteRecord(QList<Record>::iterator,QString&)), _logic.getRecordDeleter(), SLOT(slt_deleteRecord(QList<Record>::iterator,QString&)));
+    connect(_logic.getRecordDeleter(), SIGNAL(sgn_deleteRecordResults()), this, SLOT(slt_getDeleteRecordResults()));
+
+    connect(m_quitButton, SIGNAL(clicked()), this, SLOT(slt_writeRecords()));
+    connect(this, SIGNAL(sgn_writeRecords(QString&)), _logic.getFileWriter(), SLOT(slt_writeRecords(QString&)));
+    connect(m_saveAddedButton, SIGNAL(clicked()), m_saveAddedButton, SLOT(m_slt_setEnabledFALSE()));
+
+    connect(m_cancelButton, &myPushButton::clicked, this, &MainWindow::slt_cancel);
     connect(m_quitButton, SIGNAL(clicked()), this, SLOT(close()));
 
     //adding widgets
 
     m_mainLayout->addLayout(m_leftLayout,           0, 0, 11, 9);
-    m_mainLayout->addLayout(m_rightLayout,          0, 9, 11, 9);
+    m_mainLayout->addLayout(m_rightLayout,          0, 9, 11, 1);
     m_leftLayout->addLayout(m_addButtonLayout,      0, 0, 5, 5);
     m_leftLayout->addLayout(m_editButtonLayout,     5, 0, 6, 5);
-    m_leftLayout->addLayout(m_smallButtonsLayout,   0, 6, 4, 4);
-    m_leftLayout->addLayout(m_messageLayout,        4, 6, 7, 4);
+    m_leftLayout->addLayout(m_messageLayout,        0, 6, 6, 1);
+    m_leftLayout->addLayout(m_smallButtonsLayout,   6, 6, 5, 1);
 
     m_addButtonLayout->addWidget(m_addLabel,              0, 0, 1, 5);
     m_addButtonLayout->addWidget(m_addResourceLabel,      1, 0, 1, 2);
@@ -182,34 +179,27 @@ MainWindow::MainWindow(QWidget *parent)
     m_addButtonLayout->addWidget(m_saveAddedButton,       4, 2, 1, 3);
 
     m_editButtonLayout->addWidget(m_editLabel,                0, 0, 1, 5);
-    m_editButtonLayout->addWidget(m_editByLine,               1, 0, 1, 4);
-    m_editButtonLayout->addWidget(m_editByChooseButton,       1, 4, 1, 1);
-    m_editButtonLayout->addWidget(m_editResourceLabel,        2, 0, 1, 2);
-    m_editButtonLayout->addWidget(m_editResourceLine,         2, 2, 1, 3);
-    m_editButtonLayout->addWidget(m_editLoginLabel,           3, 0, 1, 2);
-    m_editButtonLayout->addWidget(m_editLoginLine,            3, 2, 1, 3);
-    m_editButtonLayout->addWidget(m_editPasswordLabel,        4, 0, 1, 2);
-    m_editButtonLayout->addWidget(m_editPasswordLine,         4, 2, 1, 2);
+    m_editButtonLayout->addWidget(m_editByLine,               1, 0, 1, 1);
+    m_editButtonLayout->addWidget(m_findButton,               1, 1, 1, 1);
+    m_editButtonLayout->addWidget(m_deleteButton,             1, 2, 1, 1);
+    m_editButtonLayout->addWidget(m_sureButton,               1, 3, 1, 1);
+    m_editButtonLayout->addWidget(m_cancelButton,             1, 4, 1, 1);
+    m_editButtonLayout->addWidget(m_editResourceLabel,        2, 0, 1, 1);
+    m_editButtonLayout->addWidget(m_editResourceLine,         2, 1, 1, 4);
+    m_editButtonLayout->addWidget(m_editLoginLabel,           3, 0, 1, 1);
+    m_editButtonLayout->addWidget(m_editLoginLine,            3, 1, 1, 4);
+    m_editButtonLayout->addWidget(m_editPasswordLabel,        4, 0, 1, 1);
+    m_editButtonLayout->addWidget(m_editPasswordLine,         4, 1, 1, 3);
     m_editButtonLayout->addWidget(m_editPasswordAutoButton,   4, 4, 1, 1);
     m_editButtonLayout->addWidget(m_checkedEditButton,        5, 0, 1, 2);
     m_editButtonLayout->addWidget(m_saveEditButton,           5, 2, 1, 3);
 
+    m_smallButtonsLayout->addWidget(m_showButton,         0, 0, 3, 1);
+    m_smallButtonsLayout->addWidget(m_quitButton,         3, 0, 4, 1);
 
+    m_messageLayout->addWidget(m_messageLabel,            0, 0, 4, 1);
 
-    m_smallButtonsLayout->addWidget(m_showButton,         0, 0, 1, 4);
-    m_smallButtonsLayout->addWidget(m_findKeywordLabel,   1, 0, 1, 1);
-    m_smallButtonsLayout->addWidget(m_findLine,           1, 1, 1, 3);
-    m_smallButtonsLayout->addWidget(m_findButton,         2, 0, 1, 1);
-    m_smallButtonsLayout->addWidget(m_deleteButton,       2, 1, 1, 1);
-    m_smallButtonsLayout->addWidget(m_sureButton,         2, 2, 1, 1);
-    m_smallButtonsLayout->addWidget(m_cancelButton,       2, 3, 1, 1);
-    m_smallButtonsLayout->addWidget(m_quitButton,         3, 0, 1, 4);
-
-    m_messageLayout->addWidget(m_messageLabel,            0, 0, 4, 4);
-
-    //m_rightLayout->addWidget(m_rightScreenLabel,          0, 0, 9, 9);
-    m_rightLayout->addWidget(m_rightScreenScrollArea,     0, 0, 9, 9);
-    //m_rightLayout->addWidget(m_rightScreenScrollBar,      0, 8, 9, 1);
+    m_rightLayout->addWidget(m_rightScreenScrollArea,     0, 0, 9, 1);
 
     //setting layouts
 
@@ -225,7 +215,7 @@ MainWindow::~MainWindow()
 QLabel *MainWindow::createLabel(const QString labelText)
 {
     QLabel* newLabel = new QLabel(labelText);
-    newLabel->setAlignment(Qt::AlignLeft);
+    newLabel->setAlignment(Qt::AlignCenter);
     newLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     return newLabel;
 }
@@ -243,15 +233,6 @@ myPushButton *MainWindow::createButton(const QString buttonText)
     myPushButton* newButton = new myPushButton(buttonText);
     newButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     return newButton;
-}
-
-QComboBox *MainWindow::createComboBox(const QString itemText, const QString itemText2)
-{
-    QComboBox* newComboBox = new QComboBox;
-    newComboBox->addItem(itemText);
-    newComboBox->addItem(itemText2);
-    newComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    return newComboBox;
 }
 
 void MainWindow::m_slt_sendInfoToRecordCreator()
@@ -343,7 +324,7 @@ void MainWindow::slt_getAutoPassword(QString* _password)
 
 void MainWindow::slt_writeRecords()
 {
-    emit sgn_writeOneFile(this->message);
+    emit sgn_writeRecords(this->message);
 }
 
 void MainWindow::slt_showLastAddedRecord(const QString &resource_, const QString &login_, const QString &password_)
@@ -415,3 +396,37 @@ void MainWindow::slt_showAllRecords(QString &resource_, QString &login_, QString
     temp.append("Resource: " + resource_ + "\nLogin: " + login_ + "\nPassword: " + password_ + "\n\n");
     m_rightScreenLabel->setText(temp);
 }
+
+void MainWindow::slt_deleteRecord()
+{
+    emit sgn_deleteRecord(_logic.getRecordFinder()->getFoundRecord(), message);
+}
+
+void MainWindow::slt_getDeleteRecordResults()
+{
+    this->clearEditLines();
+    m_sureButton->setDisabled(true);
+    m_messageLabel->setText(message);
+    m_showButton->click();
+}
+
+void MainWindow::slt_cancel()
+{
+    this->clearEditLines();
+    m_sureButton->setDisabled(true);
+}
+
+void MainWindow::clearEditLines()
+{
+    m_editByLine->clear();
+    m_editResourceLine->clear();
+    m_editLoginLine->clear();
+    m_editPasswordLine->clear();
+}
+
+
+
+
+
+
+

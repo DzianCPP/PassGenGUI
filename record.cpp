@@ -6,3 +6,13 @@ Record::Record(const QString& login, const QString& resource, const QString& pas
     this->resource = resource;
     this->password = password;
 }
+
+bool Record::operator==(const Record &other) const
+{
+    if (this->resource == other.resource && this->login == other.login && this->password == other.login)
+    {
+        return true;
+    }
+
+    return false;
+}

@@ -15,6 +15,12 @@ void RecordEditor::slt_editRecord(QList<Record>::iterator toEdit, QString &newRe
 bool RecordEditor::editRecord(QList<Record>::iterator &toEdit, QString &newResource_, QString &newLogin_,
                                                                 QString &newPassword_, QString &message_)
 {
+    if (newResource_ == "" || newLogin_ == "")
+    {
+        message_ = "Error! No resource or login were entered";
+        return false;
+    }
+
     if (_recordList->empty())
     {
         message_ = "No records made yet";

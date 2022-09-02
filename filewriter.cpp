@@ -14,10 +14,15 @@ void FileWriter::slt_writeRecords(QString& message)
 bool FileWriter::writeRecords(QString &message)
 {
     QFile file(filename);
-    if (!file.open(QIODeviceBase::ReadWrite))
+    if (!file.open(QIODeviceBase::ReadWrite | QIODeviceBase::Truncate))
     {
         message = "Error! Could not save the record!";
         return false;
+    }
+
+    for (auto it : *_recordList)
+    {
+        qInfo() << it.resource << "\n";
     }
 
     if (_recordList->empty())
@@ -31,6 +36,8 @@ bool FileWriter::writeRecords(QString &message)
     while(toWrite != _recordList->end())
     {
         fout << toWrite->resource + "\n" + toWrite->login + "\n" + toWrite->password + "\n";
+        qInfo() << "______\n" << toWrite->resource << "\n";
+
         ++toWrite;
     }
     file.close();

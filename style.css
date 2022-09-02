@@ -1,0 +1,79 @@
+MainWindow {
+background-color: rgb(255, 255, 250);
+}
+
+QLabel {
+background-color: rgb(255, 255, 250);
+color: rgb(13, 24, 33);
+}
+
+QLineEdit {
+background-color: rgb(210, 210, 205);
+border-radius: 5px;
+}
+
+myPushButton {
+
+background-color: rgb(102, 102, 110);
+border-radius: 5px;
+border-color: black;
+color: rgb(255, 255, 250);
+}
+
+myPushButton::pressed {
+background-color: rgb(72, 72, 70);
+border-radius: 5px;
+border-color: black;
+color: rgb(205, 205, 200);
+}
+
+QScrollArea {
+background-color: rgb(0, 0, 0);
+border: none;
+}
+
+QScrollBar:vertical {
+border: 2px none rgb(0, 0, 0);
+background: rgb(0, 0, 0);
+width: 20px;
+margin: 22px 0 22px 0;
+}
+
+QScrollBar::handle:vertical {
+background: rgb(255, 255, 250);
+border-left: 2px solid rgb(0, 0, 0);
+border-right: 2px solid rgb(0, 0, 0);
+min-height: 20px;
+}
+
+QScrollBar::add-line:vertical {
+border: 2px solid rgb(0, 0, 0);
+background: rgb(0, 0, 0);
+height: 15px;
+subcontrol-position: bottom;
+subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+border: 2px solid rgb(0, 0, 0);
+background: rgb(0, 0, 0);
+height: 15px;
+subcontrol-position: top;
+subcontrol-origin: margin;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+width: 5px;
+height: 5px;
+background: white;
+}
+
+QScrollBar::up-arrow:vertical::pressed, QScrollBar::down-arrow:vertical::pressed {
+width: 4px;
+height: 4px;
+background: rgb(102, 102, 110);
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+background: rgb(102, 102, 110);
+}

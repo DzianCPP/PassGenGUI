@@ -59,3 +59,9 @@ AllRecordShower *logic::getAllRecordShower()
     AllRecordShower* thisAllRecordShower = &this->allRecordShower;
     return thisAllRecordShower;
 }
+
+RecordDeleter *logic::getRecordDeleter()
+{
+    RecordDeleter* thisRecordDeleter = &this->recordDeleter;
+    return thisRecordDeleter;
+}

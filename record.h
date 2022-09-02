@@ -16,6 +16,8 @@ public:
 
     Record(const QString& login, const QString& resource, const QString& password);
 
+    bool operator==(const Record & other) const;
+
 private:
 
 };

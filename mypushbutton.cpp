@@ -3,7 +3,6 @@
 myPushButton::myPushButton(const QString buttonText)
 {
     this->setText(buttonText);
-    this->setStyleSheet(" background-color: aquamarine; ");
 
 }
 

@@ -10,6 +10,7 @@
 #include "recordfinder.h"
 #include "recordeditor.h"
 #include "allrecordshower.h"
+#include "recorddeleter.h"
 
 #include <QObject>
 
@@ -27,6 +28,7 @@ public:
     RecordFinder* getRecordFinder();
     RecordEditor* getRecordEditor();
     AllRecordShower* getAllRecordShower();
+    RecordDeleter* getRecordDeleter();
 
 signals:
 
@@ -40,6 +42,7 @@ private:
     RecordFinder recordFinder;
     RecordEditor recordEditor;
     AllRecordShower allRecordShower;
+    RecordDeleter recordDeleter;
 
 
 };

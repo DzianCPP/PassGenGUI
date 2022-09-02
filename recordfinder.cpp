@@ -19,6 +19,11 @@ void RecordFinder::slt_findRecord(const QString &keyword_, QString &message_)
 
 bool RecordFinder::findRecord(QString &resource_, QString &login_, QString &password_, QString& message_, const QString &keyword_)
 {
+    if (keyword_ == "")
+    {
+        message_ = "Enter a keyword";
+        return false;
+    }
     QList<Record>::iterator toFind = _recordList->begin();
     if (_recordList->empty())
     {

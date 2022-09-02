@@ -41,6 +41,9 @@ set(PROJECT_SOURCES
 	recordeditor.cpp
 	allrecordshower.h
 	allrecordshower.cpp
+	recorddeleter.h
+	recorddeleter.cpp
+	style.qrc
 
 	data.h
 	data.cpp
