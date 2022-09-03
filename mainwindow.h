@@ -34,7 +34,7 @@ signals:
     void sgn_showLastAddedRecord();
     void sgn_findRecord(const QString& keyword_, QString& message_);
     void sgn_editRecord(QList<Record>::iterator toEdit, QString& newResource_, QString& newLogin_, QString& newPassword_, QString& message_);
-    void sgn_askForInfoToShowAllRecords();
+    void sgn_askForInfoToShowAllRecords(QString& message_);
     void sgn_deleteRecord(QList<Record>::iterator toDelete, QString& message_);
 
 private slots:

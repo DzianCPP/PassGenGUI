@@ -15,7 +15,7 @@ public:
     void createNewRecord(const QString& login_, const QString& resource_, const QString& password_);
 
 public slots:
-    void slt_createNewRecord(const QString& login_, const QString& resource_, const QString& password_);
+    bool slt_createNewRecord(const QString& login_, const QString& resource_, const QString& password_);
 
 private:
     QList<Record>* recordList_ = _recordList;

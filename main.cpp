@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
     QFile styleFile(":/style.css");
     styleFile.open(QIODeviceBase::ReadOnly);
     a.setStyleSheet(styleFile.readAll());
+    a.setWindowIcon(QIcon("D:\\QtProjects\\PassGenGUI\\ico.png"));
     MainWindow w;
     w.show();
     return a.exec();

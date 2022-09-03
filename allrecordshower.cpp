@@ -6,7 +6,7 @@ AllRecordShower::AllRecordShower(QObject *parent)
 
 }
 
-void AllRecordShower::slt_extractInfoToShow()
+void AllRecordShower::slt_extractInfoToShow(QString& message_)
 {
     QList<Record>::iterator toShow = _recordList->begin();
     while (toShow != _recordList->end())

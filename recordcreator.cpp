@@ -11,7 +11,12 @@ void recordcreator::createNewRecord(const QString& login_, const QString& resour
     this->recordList_->push_back(*newRecord);
 }
 
-void recordcreator::slt_createNewRecord(const QString &login_, const QString &resource_, const QString &password_)
+bool recordcreator::slt_createNewRecord(const QString &login_, const QString &resource_, const QString &password_)
 {
+    if (resource_.isEmpty() || login_.isEmpty())
+    {
+        return false;
+    }
     this->createNewRecord(login_, resource_, password_);
+    return true;
 }

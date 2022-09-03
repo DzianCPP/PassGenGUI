@@ -14,7 +14,7 @@ signals:
     void sgn_sendInfoToShow(QString& resource_, QString& login_, QString& password);
 
 public slots:
-    void slt_extractInfoToShow();
+    void slt_extractInfoToShow(QString &message_);
 
 private:
 
