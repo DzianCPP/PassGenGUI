@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
-    this->setMinimumSize(850, 400);
+    this->setMinimumSize(850, 500);
 
     //line_edits
 
@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     //labels
 
     m_rightScreenLabel = createLabel("");
+    m_rightScreenLabel->setMinimumWidth(250);
     m_rightScreenLabel->setAlignment(Qt::AlignLeft);
     m_rightScreenLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     m_addResourceLabel = createLabel("Resource:");
